@@ -8,9 +8,6 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.util.Scanner;
 
-/**
- * Created by nathan on 5/4/16.
- */
 public class Helpers {
 
     //prints message passed and returns what the user inputs
