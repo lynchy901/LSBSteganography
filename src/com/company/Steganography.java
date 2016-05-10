@@ -17,35 +17,36 @@ public class Steganography {
 
         /**
          * Check to make sure there is enough room in the photo
-         * does msgData.length*8 because for each byte of message data we need 8 bytes of the photo to store it
          */
 
-        if ((msgData.length*8) < picData.length) {
-            System.out.println("Not enough room in the image");
-        }
+        try{
 
-        //This stores the length of the message in the first 8 bytes
-        //loops through all the bits in the byte
-        System.out.print("Length: ");
-        for (int b = 7; b >= 0; b--) {
-            bitToAdd = (byte)((length >>> b) & 1); //Note: this is a byte but it's always 0 or 1 because we only add the rightmost bit on the end of the pic byte
-
-            picData[picByteCounter] = (byte)(picData[picByteCounter] & 0xfe); // ANDs with 11111110 to zero out last bit
-            picData[picByteCounter] = (byte)(picData[picByteCounter] | bitToAdd); // ORs with bitToAdd (00000001 or 00000000) to change last bit to the bit to add
-            System.out.print(bitToAdd);
-            picByteCounter++;//makes sure current byte in the photo changes each time a LSB is modified
-        }
-
-        for (int i = 0; i < msgData.length; i++) {
+            //This stores the length of the message in the first 8 bytes
+            //loops through all the bits in the byte
+            System.out.print("Length: ");
             for (int b = 7; b >= 0; b--) {
-                bitToAdd = (byte)((msgData[i] >>> b) & 1); //Note: this is a byte but it's always 0 or 1 because we only add the rightmost bit on the end of the pic byte
+                bitToAdd = (byte)((length >>> b) & 1); //Note: this is a byte but it's always 0 or 1 because we only add the rightmost bit on the end of the pic byte
 
                 picData[picByteCounter] = (byte)(picData[picByteCounter] & 0xfe); // ANDs with 11111110 to zero out last bit
                 picData[picByteCounter] = (byte)(picData[picByteCounter] | bitToAdd); // ORs with bitToAdd (00000001 or 00000000) to change last bit to the bit to add
-
-                picByteCounter++;//makes sure current byte changes each time a new LSB is added
+                System.out.print(bitToAdd);
+                picByteCounter++;//makes sure current byte in the photo changes each time a LSB is modified
             }
+
+            for (int i = 0; i < msgData.length; i++) {
+                for (int b = 7; b >= 0; b--) {
+                    bitToAdd = (byte)((msgData[i] >>> b) & 1); //Note: this is a byte but it's always 0 or 1 because we only add the rightmost bit on the end of the pic byte
+
+                    picData[picByteCounter] = (byte)(picData[picByteCounter] & 0xfe); // ANDs with 11111110 to zero out last bit
+                    picData[picByteCounter] = (byte)(picData[picByteCounter] | bitToAdd); // ORs with bitToAdd (00000001 or 00000000) to change last bit to the bit to add
+
+                    picByteCounter++;//makes sure current byte changes each time a new LSB is added
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Image too small!");
         }
+
         return image;
     }
 
